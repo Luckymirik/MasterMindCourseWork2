@@ -2,6 +2,7 @@ package pro.sky.MasterMindCourseWorkTwo.service;
 
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import pro.sky.MasterMindCourseWorkTwo.Exception.EmptyArrayException;
 import pro.sky.MasterMindCourseWorkTwo.entity.Question;
 import pro.sky.MasterMindCourseWorkTwo.repository.QuestionRepository;
 
@@ -39,10 +40,14 @@ public class JavaQuestionService implements QuestionService{
 
     public Question getRandomQuestion(){
         Question[] arr = javaQuestionRepository.getAll().toArray(new Question[0]);
+        if (arr.length==0){
+            throw new EmptyArrayException();
+        }
         return arr[random.nextInt(arr.length)];
-
-
     }
 
-
+//    @Override
+//    public int getSize() {
+//        return 0;
+//    }
 }

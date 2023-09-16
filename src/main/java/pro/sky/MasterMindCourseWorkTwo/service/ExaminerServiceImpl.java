@@ -9,31 +9,28 @@ import java.util.*;
 
 @Service
 public class ExaminerServiceImpl implements ExaminerService {
-    private final QuestionService questionService;
-    private final QuestionService mathQuestionService;
-    public ExaminerServiceImpl(QuestionService questionService,@Qualifier("mathQuestionService") QuestionService mathQuestionService) {
-        this.questionService = questionService;
-        this.mathQuestionService = mathQuestionService;
+    public final List<QuestionService> questionServices;
+    private final Random random = new Random();
+
+    public ExaminerServiceImpl( QuestionService questionService,
+                               @Qualifier("mathQuestionService") QuestionService mathQuestionService) {
+       questionServices = new ArrayList<>();
+       questionServices.add(questionService);
+       questionServices.add(mathQuestionService);
     }
+
+
     @Override
     public Collection<Question> getQuestion(int amount) {
         Set<Question> randomQuestion = new HashSet<>();
-
-        if (amount < 0 || amount > questionService.getAll().size()+mathQuestionService.getAll().size()) {
+        if (amount < 0 || amount > questionServices.get(0).getAll().size()*2) {
             throw new AmountMoreThanRequiredException();
         }
-        Collection<Question> allQuestion = new HashSet<>();
-        allQuestion.addAll(questionService.getAll());
-        allQuestion.addAll(mathQuestionService.getAll());
-        if (amount==questionService.getAll().size()+mathQuestionService.getAll().size()){
-            return allQuestion;
-        }
-        Random random = new Random();
         while (randomQuestion.size() < amount) {
             if(random.nextBoolean()) {
-                randomQuestion.add(questionService.getRandomQuestion());
+                randomQuestion.add(questionServices.get(0).getRandomQuestion());
             }else{
-                randomQuestion.add(mathQuestionService.getRandomQuestion());
+                randomQuestion.add(questionServices.get(1).getRandomQuestion());
             }
         }
         return Collections.unmodifiableSet(randomQuestion);
