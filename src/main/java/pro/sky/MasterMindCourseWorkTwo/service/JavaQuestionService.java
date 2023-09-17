@@ -46,8 +46,8 @@ public class JavaQuestionService implements QuestionService{
         return arr[random.nextInt(arr.length)];
     }
 
-//    @Override
-//    public int getSize() {
-//        return 0;
-//    }
+    @Override
+    public int getSize() {
+        return 0;
+    }
 }

@@ -9,21 +9,22 @@ import java.util.*;
 
 @Service
 public class ExaminerServiceImpl implements ExaminerService {
-    public final List<QuestionService> questionServices;
+    private final List<QuestionService> questionServices;
     private final Random random = new Random();
 
-    public ExaminerServiceImpl( QuestionService questionService,
+    public ExaminerServiceImpl(@Qualifier("javaQuestionService") QuestionService javaQuestionService,
                                @Qualifier("mathQuestionService") QuestionService mathQuestionService) {
-       questionServices = new ArrayList<>();
-       questionServices.add(questionService);
-       questionServices.add(mathQuestionService);
+        questionServices = new ArrayList<>();
+        questionServices.add(javaQuestionService);
+        questionServices.add(mathQuestionService);
     }
 
 
     @Override
     public Collection<Question> getQuestion(int amount) {
         Set<Question> randomQuestion = new HashSet<>();
-        if (amount < 0 || amount > questionServices.get(0).getAll().size()*2) {
+        if (amount < 0 || amount > questionServices.get(0).getAll().size()
+                +questionServices.get(1).getSize()){
             throw new AmountMoreThanRequiredException();
         }
         while (randomQuestion.size() < amount) {

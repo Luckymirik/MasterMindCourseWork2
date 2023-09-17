@@ -23,11 +23,17 @@ class ExaminerServiceTest {
     private JavaQuestionService javaQuestionService;
     @Mock
     private MathQuestionService mathQuestionService;
+
     @InjectMocks
     private ExaminerServiceImpl examinerService;
+
     @BeforeEach
     public void beforeEach() {
         examinerService = new ExaminerServiceImpl(javaQuestionService,mathQuestionService);
+
+
+
+
         Mockito.when(javaQuestionService.getAll()).thenReturn(
                 Set.of(
                         new Question("●\t@Component", "Spring определяет этот класс как кандидата для создания bean"),
@@ -36,7 +42,12 @@ class ExaminerServiceTest {
                         new Question("●\t@Controller ", "указывает, что класс выполняет роль контроллера MVC. " +
                                 "Диспетчер сервлетов просматривает такие классы для поиска @RequestMapping")
                 )
+
         );
+
+        when(mathQuestionService.getSize()).thenReturn(1);
+
+
 
     }
 
@@ -45,7 +56,7 @@ class ExaminerServiceTest {
     @Test
     void getQuestion() {
         Assertions.assertThrows(AmountMoreThanRequiredException.class,
-                ()->examinerService.getQuestion(7));
+                ()->examinerService.getQuestion(5));
     }
     @Test
     void getQuestionPositive() {
@@ -66,24 +77,24 @@ class ExaminerServiceTest {
                         "Spring определяет этот класс как кандидата для создания bean"),
                 new Question("●\t@Service "," класс содержит бизнес-логику и вызывает методы на уровне хранилища." +
                         " Ничем не отличается от классов с @Component"));
-        when(mathQuestionService.getRandomQuestion()).thenReturn(
-                new Question("Какую часть оборота вы прошли," +
-                        " если встали лицом на запад и повернулись по часовой стрелке лицом на юг?","¾")
-        );
+        when(mathQuestionService.getRandomQuestion()).thenReturn(new Question("Какую часть оборота вы прошли," +
+                " если встали лицом на запад и повернулись по часовой стрелке лицом на юг?","¾"));
+
 
 
 
         Set<Question> questionSet = new HashSet<>();
         questionSet.add(new Question("●\t@Component",
                 "Spring определяет этот класс как кандидата для создания bean"));
-        questionSet.add(new Question("Какую часть оборота вы прошли," +
-                " если встали лицом на запад и повернулись по часовой стрелке лицом на юг?","¾"));
+
         questionSet.add( new Question("●\t@Service ",
                 " класс содержит бизнес-логику и вызывает методы на уровне хранилища." +
                         " Ничем не отличается от классов с @Component"));
         questionSet.add(new Question("●\t@Controller ",
                 "указывает, что класс выполняет роль контроллера MVC. " +
                         "Диспетчер сервлетов просматривает такие классы для поиска @RequestMapping"));
+        questionSet.add(new Question("Какую часть оборота вы прошли," +
+                " если встали лицом на запад и повернулись по часовой стрелке лицом на юг?","¾"));
 
         Assertions.assertEquals(questionSet,examinerService.getQuestion(4));
     }
