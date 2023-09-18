@@ -48,6 +48,6 @@ public class JavaQuestionService implements QuestionService{
 
     @Override
     public int getSize() {
-        return 0;
+        return getAll().size();
     }
 }
